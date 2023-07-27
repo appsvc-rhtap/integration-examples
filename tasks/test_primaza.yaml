@@ -1,0 +1,39 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: test-primaza
+spec:
+  params:
+    - default: 'default'
+      name: NAMESPACE
+      description: Namespace of the application under test
+  results:
+    - name: TEST_OUTPUT
+      description: Test output
+  steps:
+    - image: bitnami/kubectl
+      env:
+        - name: NAMESPACE
+          value: $(params.NAMESPACE)
+        - name: EXPECTED_OUTPUT
+          value: $(params.EXPECTED_OUTPUT)
+      script: |
+        #!/usr/bin/env bash
+        EXPECTED_OUTPUT="SomeoneThinksImAPassword"
+        export KUBECONFIG=$(workspaces.cluster-credentials.path)/kubeconfig
+
+        # Get the environment binding for teh application
+        ACTUAL_OUTPUT=$(kubectl exec -i -t $(kubectl get pod -l "app:go-app" -o jsonpath='{.items[0].metadata.name}') -- ls /bindings/my-app-dummy-for-appns/password)
+
+        if [[ "${ACTUAL_OUTPUT}" == "${EXPECTED_OUTPUT}" ]]; then
+          RESULT="SUCCESS"
+        else
+          RESULT="FAILURE"
+        fi
+
+        TEST_OUTPUT=$(jq -rc --arg date $(date +%s) --arg RESULT "${RESULT}" --null-input \
+          '{result: $RESULT, timestamp: $date, failures: 0, successes: 0, warnings: 0}')
+        echo -n "${TEST_OUTPUT}" | tee $(results.TEST_OUTPUT.path)
+  workspaces:
+    - name: cluster-credentials
+      optional: true

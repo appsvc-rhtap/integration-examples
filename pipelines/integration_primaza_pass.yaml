@@ -1,0 +1,40 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: integration-primaza-pass
+spec:
+  description: >-
+    Expects a Snapshot of a simple application with endpoint containing the expected output to be deployed on an environment.
+    A secret containing the kubeconfig for the environment needs to be mounted via the cluster-credentials workspace binding.
+    The route to the single component is expected to have the same name as the component (default appstudio behavior).
+  params:
+    - description: 'Namespace where the application is running'
+      name: NAMESPACE
+      default: "default"
+      type: string
+    - description: 'Expected output'
+      name: EXPECTED_OUTPUT
+      default: "Hello World"
+      type: string
+  tasks:
+    - name: test-app-endpoint
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: https://github.com/redhat-appstudio/integration-examples
+          - name: revision
+            value: main
+          - name: pathInRepo
+            value: tasks/test_app_endpoint.yaml
+      params:
+        - name: NAMESPACE
+          value: $(params.NAMESPACE)
+        - name: EXPECTED_OUTPUT
+          value: $(params.EXPECTED_OUTPUT)
+      workspaces:
+        - name: cluster-credentials
+          workspace: cluster-credentials
+  workspaces:
+    - name: cluster-credentials
+      optional: true
