@@ -4,7 +4,7 @@ metadata:
   name: test-primaza
 spec:
   params:
-    - default: 'user1-default'
+    - default: 'user1-tenant'
       name: NAMESPACE
       description: Namespace of the application under test
   results:
