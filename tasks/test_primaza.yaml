@@ -15,8 +15,6 @@ spec:
       env:
         - name: NAMESPACE
           value: $(params.NAMESPACE)
-        - name: EXPECTED_OUTPUT
-          value: $(params.EXPECTED_OUTPUT)
       script: |
         #!/usr/bin/env bash
         EXPECTED_OUTPUT="SomeoneThinksImAPassword"
