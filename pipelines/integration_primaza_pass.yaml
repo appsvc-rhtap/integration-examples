@@ -10,7 +10,15 @@ spec:
   params:
     - description: 'Namespace where the application is running'
       name: NAMESPACE
-      default: "default"
+      default: "user1-tenant"
+      type: string
+    - description: 'Service Binding in application namespace'
+      name: BINDING
+      default: "my-app-dummy-for-appns"
+      type: string
+    - description: 'Bound variable key'
+      name: KEY
+      default: "password"
       type: string
   tasks:
     - name: test-primaza
