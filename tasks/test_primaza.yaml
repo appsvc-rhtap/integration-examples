@@ -13,6 +13,9 @@ spec:
     - default: 'password'
       name: KEY
       description: 'Bound variable key'
+    - default: 'app=my-go'
+      name: LABEL
+      description: 'Label on application'
   results:
     - name: TEST_OUTPUT
       description: Test output
@@ -25,6 +28,8 @@ spec:
           value: $(params.BINDING)
         - name: KEY
           value: $(params.KEY)
+        - name: LABEL
+          value: $(params.LABEL)
       script: |
         #!/usr/bin/env bash
         EXPECTED_OUTPUT="SomeoneThinksImAPassword"
@@ -32,8 +37,9 @@ spec:
         echo $NAMESPACE
         echo $BINDING
         echo $KEY
-        # Get the environment binding for teh application
-        ACTUAL_OUTPUT=$(kubectl exec $(kubectl get pod -l app=my-go -o jsonpath='{.items[0].metadata.name}' -n "${NAMESPACE}") -n "${NAMESPACE}" -- cat /bindings/"${BINDING}"/"${KEY}")
+        echo $LABEL
+        # Get the environment binding for the application
+        ACTUAL_OUTPUT=$(kubectl exec $(kubectl get pod -l "${LABEL}" -o jsonpath='{.items[0].metadata.name}' -n "${NAMESPACE}") -n "${NAMESPACE}" -- cat /bindings/"${BINDING}"/"${KEY}")
 
         if [[ "${ACTUAL_OUTPUT}" == "${EXPECTED_OUTPUT}" ]]; then
           RESULT="SUCCESS"

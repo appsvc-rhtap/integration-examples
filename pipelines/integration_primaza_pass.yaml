@@ -20,6 +20,10 @@ spec:
       name: KEY
       default: "password"
       type: string
+    - description: 'Label on application'
+      name: LABEL
+      default: "app=my-go"
+      type: string
   tasks:
     - name: test-primaza
       taskRef:
