@@ -19,7 +19,7 @@ spec:
         #!/usr/bin/env bash
         EXPECTED_OUTPUT="SomeoneThinksImAPassword"
         export KUBECONFIG=$(workspaces.cluster-credentials.path)/kubeconfig
-
+        echo $NAMESPACE
         # Get the environment binding for teh application
         ACTUAL_OUTPUT=$(kubectl exec $(kubectl get pod -l app=my-go -o jsonpath='{.items[0].metadata.name}' -n "${NAMESPACE}") -n "${NAMESPACE}" -- cat /bindings/my-app-dummy-for-appns/password)
 
