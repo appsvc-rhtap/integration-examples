@@ -30,7 +30,7 @@ spec:
         fi
 
         TEST_OUTPUT=$(jq -rc --arg date $(date +%s) --arg RESULT "${RESULT}" --arg ACTUAL_OUTPUT "${ACTUAL_OUTPUT}" --arg EXPECTED_OUTPUT "${EXPECTED_OUTPUT}"  --null-input \
-          '{result: $RESULT, timestamp: $date, actual_output:$ACTUAL_OUTPUT, expected_output: EXPECTED_OUTPUT, failures: 0, successes: 0, warnings: 0}')
+          '{result: $RESULT, timestamp: $date, actual_output:$ACTUAL_OUTPUT, expected_output:$EXPECTED_OUTPUT, failures: 0, successes: 0, warnings: 0}')
         echo -n "${TEST_OUTPUT}" | tee $(results.TEST_OUTPUT.path)
   workspaces:
     - name: cluster-credentials
