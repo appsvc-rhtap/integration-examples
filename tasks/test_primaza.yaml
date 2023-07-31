@@ -4,7 +4,7 @@ metadata:
   name: test-primaza
 spec:
   params:
-    - default: 'default'
+    - default: 'user1-default'
       name: NAMESPACE
       description: Namespace of the application under test
   results:
@@ -21,7 +21,7 @@ spec:
         export KUBECONFIG=$(workspaces.cluster-credentials.path)/kubeconfig
 
         # Get the environment binding for teh application
-        ACTUAL_OUTPUT=$(kubectl exec -i -t $(kubectl get pod -l "app:go-app" -o jsonpath='{.items[0].metadata.name}') -- ls /bindings/my-app-dummy-for-appns/password)
+        ACTUAL_OUTPUT=$(kubectl exec -i -t $(kubectl get pod -l app=my-go -o jsonpath='{.items[0].metadata.name}' -n $NAMESPACE) -n $NAMESPACE -- ls /bindings/my-app-dummy-for-appns/password)
 
         if [[ "${ACTUAL_OUTPUT}" == "${EXPECTED_OUTPUT}" ]]; then
           RESULT="SUCCESS"
