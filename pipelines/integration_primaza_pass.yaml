@@ -13,7 +13,7 @@ spec:
       default: "default"
       type: string
   tasks:
-    - name: test_primaza
+    - name: test-primaza
       taskRef:
         resolver: git
         params:
